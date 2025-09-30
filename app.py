@@ -1,44 +1,90 @@
+import json
+import os
 from flask import Flask, render_template, request, redirect, url_for
-import tasks  # módulo de tarefas
 
 app = Flask(__name__)
 
-# Página inicial: lista todas as tarefas
+DATA_FILE = "tasks.json"
+
+# ---------- Funções auxiliares ----------
+def carregar_tarefas():
+    if not os.path.exists(DATA_FILE):
+        return []
+    with open(DATA_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def salvar_tarefas(tarefas):
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(tarefas, f, indent=4, ensure_ascii=False)
+
+# Carrega ao iniciar
+tarefas = carregar_tarefas()
+
+def mensagem_motivacional():
+    total = len(tarefas)
+    feitas = sum(1 for t in tarefas if t["feito"])
+    pendentes = total - feitas
+
+    if total == 0:
+        return "Tudo pronto, aproveite o dia! 😎"
+    elif pendentes == 0:
+        return "Parabéns, todas as tarefas do dia foram concluídas! 🎉"
+    elif pendentes > 5:
+        return "Hora de focar! 💪"
+    else:
+        return "Continue no ritmo, você consegue! 🚀"
+
+# ---------- Rotas ----------
 @app.route("/")
 def index():
-    all_tasks = tasks.get_tasks()
-    return render_template("index.html", tasks=all_tasks)
+    global tarefas
+    tarefas = carregar_tarefas()
+    total = len(tarefas)
+    feitas = sum(1 for t in tarefas if t["feito"])
+    pendentes = total - feitas
+    msg = mensagem_motivacional()
+    return render_template("index.html", tarefas=tarefas, total=total, feitas=feitas, pendentes=pendentes, msg=msg)
 
-# Adicionar nova tarefa
 @app.route("/add", methods=["GET", "POST"])
 def add():
+    global tarefas
     if request.method == "POST":
-        title = request.form["title"]
-        description = request.form.get("description", "")
-        tasks.add_task(title, description)
+        novo_id = max([t["id"] for t in tarefas], default=0) + 1
+        titulo = request.form["titulo"]
+        descricao = request.form["descricao"]
+        tarefas.append({"id": novo_id, "titulo": titulo, "descricao": descricao, "feito": False})
+        salvar_tarefas(tarefas)
         return redirect(url_for("index"))
     return render_template("add.html")
 
-# Atualizar tarefa
-@app.route("/update/<task_id>", methods=["GET", "POST"])
-def update(task_id):
-    task = tasks.get_task(task_id)
-    if not task:
-        return "Tarefa não encontrada", 404
+@app.route("/toggle/<int:id>")
+def toggle(id):
+    global tarefas
+    for t in tarefas:
+        if t["id"] == id:
+            t["feito"] = not t["feito"]
+            break
+    salvar_tarefas(tarefas)
+    return redirect(url_for("index"))
 
-    if request.method == "POST":
-        title = request.form["title"]
-        description = request.form.get("description", "")
-        status = request.form.get("status", "pending")
-        tasks.update_task(task_id, title, description, status)
-        return redirect(url_for("index"))
+@app.route("/edit/<int:id>", methods=["GET", "POST"])
+def edit(id):
+    global tarefas
+    for t in tarefas:
+        if t["id"] == id:
+            if request.method == "POST":
+                t["titulo"] = request.form["titulo"]
+                t["descricao"] = request.form["descricao"]
+                salvar_tarefas(tarefas)
+                return redirect(url_for("index"))
+            return render_template("edit.html", tarefa=t)
+    return redirect(url_for("index"))
 
-    return render_template("update.html", task=task)
-
-# Excluir tarefa
-@app.route("/delete/<task_id>")
-def delete(task_id):
-    tasks.delete_task(task_id)
+@app.route("/delete/<int:id>")
+def delete(id):
+    global tarefas
+    tarefas = [t for t in tarefas if t["id"] != id]
+    salvar_tarefas(tarefas)
     return redirect(url_for("index"))
 
 if __name__ == "__main__":

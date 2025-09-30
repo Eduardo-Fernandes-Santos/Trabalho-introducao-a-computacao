@@ -1,34 +1,12 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    background: #f9f9f9;
+    background-color: #f8f9fa;
 }
-header {
-    background: #333;
-    color: white;
-    padding: 10px;
+
+.card {
+    border-radius: 12px;
+    transition: transform 0.2s ease;
 }
-header h1 {
-    margin: 0;
-}
-nav a {
-    color: #fff;
-    margin-right: 10px;
-    text-decoration: none;
-}
-main {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-}
-button {
-    padding: 8px 15px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-button:hover {
-    background: #0056b3;
+
+.card:hover {
+    transform: scale(1.02);
 }
