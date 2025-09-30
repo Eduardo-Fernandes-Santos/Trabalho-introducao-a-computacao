@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-import tasks  # nosso módulo de tarefas
+import tasks  # módulo de tarefas
 
 app = Flask(__name__)
 
