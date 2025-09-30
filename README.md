@@ -1,6 +1,7 @@
 # 📋 Gerenciador de Tarefas  
+## Eduardo Fernandes - 22552011
 
-Um sistema simples e elegante para gerenciamento de tarefas, desenvolvido em **Python** com **Flask**.  
+Criei um sistema simples para gerenciamento de tarefas, desenvolvido em **Python** com **Flask**.  
 Permite adicionar, editar, marcar como concluídas e excluir tarefas, tudo de forma prática e com interface estilizada.  
 
 > 🔥 Projeto acadêmico com foco em aprendizado para a disciplina de Introdução à Computação.  
@@ -27,10 +28,12 @@ Antes de rodar o projeto, certifique-se de ter instalado em sua máquina:
 ## 📦 Como rodar o projeto
 
 1. **Clone o repositório**
-   git clone https://github.com/SEU-USUARIO/NOME-DO-REPO.git
-
+````
+git clone https://github.com/Eduardo-Fernandes-Santos/Trabalho-introducao-a-computacao.git
+````
+````
 cd NOME-DO-REPO
-
+````
 2. **Crie e ative o ambiente virtual**  
 
 **Windows (PowerShell):** 
