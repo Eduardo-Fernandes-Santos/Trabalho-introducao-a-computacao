@@ -40,9 +40,9 @@ cd NOME-DO-REPO
 ```
 python -m venv .venv
 ```
-**Linux/Mac:**  
+**Linux/Mac (Acho que é o mesmo comando do windows):**  
 ```
-python -m venv .venv9
+python -m venv .venv
 ```
 
 3. **Instale as dependências**
